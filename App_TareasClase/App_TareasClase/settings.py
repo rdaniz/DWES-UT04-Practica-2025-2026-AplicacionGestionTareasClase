@@ -34,14 +34,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Añadir nueva aplicación
+    'TareasDWES',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Añadir nueva aplicación
-    'TareasDWES',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# Utilizo AUTH_USER_MODEL = 'TareasDWES.Usuario' porque he extendido de AbstractUser
+AUTH_USER_MODEL = 'TareasDWES.Usuario'
+
