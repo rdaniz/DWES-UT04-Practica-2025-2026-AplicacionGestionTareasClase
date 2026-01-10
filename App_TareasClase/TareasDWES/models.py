@@ -17,8 +17,6 @@ class Usuario(AbstractUser):
         (ALUMNO, 'Alumno'),
         (PROFESOR, 'Profesor'),
     ]
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
     # En default el rol es PROFESOR porque al crear el superusuario desde consola
     # no me pide el campo rol y si el default fuera ALUMNO,
@@ -47,21 +45,38 @@ class Tarea(models.Model):
     fecha_entrega = models.DateField()
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
     creada_por = models.ForeignKey(
-        # 'TareasDWES.Usuario', on_delete=models.CASCADE, related_name='tareas_creadas')
+        # Usuario, on_delete=models.CASCADE, related_name='tareas_creadas')
 
         # Modifico on_delete=models.CASCADE porque si borro al creador de una tarea se borrará la tarea
         # pero si es grupal, los colaboradores seguirán, por lo que quiero que se mantenga la tarea.
-        Usuario, null=True, blank=True, on_delete=models.SET_NULL, related_name='tareas_creadas')
+        Usuario, null=True, on_delete=models.SET_NULL, related_name='tareas_creadas')
     requiere_validacion = models.BooleanField(default=False)
     validada = models.BooleanField(default=False)
     profesor_validador = models.ForeignKey(
-        Usuario, null=True, blank=True, on_delete=models.SET_NULL, related_name='tareas_a_validar')
+        Usuario, null=True, on_delete=models.SET_NULL, related_name='tareas_a_validar')
 
     # Además del título muestro el id para poder añadirlo a la url y buscar la tarea
     def __str__(self):
         return f"{self.titulo} - {self.id}"
 
 # Crear modelo Tarea Grupal
+
+# La tabla Tarea es común a todas las tareas.
+# TareaGrupal solo existe si Tarea.tipo es grupal.
+
+# OneToOneField con Tarea:
+# Cada tarea grupal corresponde a una tarea.
+# Una tarea solo puede tener un detalle grupal.
+
+# on_delete=models.CASCADE
+# Si se elimina la tarea principal, se elimina su información grupal.
+
+# ManyToManyField
+# Una tarea grupal puede tener muchos usuarios.
+# Un usuario puede estar en muchas tareas grupales.
+
+    # Django crea automáticamente una tabla intermedia con dos FK: tareagrupal_id y usuario_id.
+
 class TareaGrupal(models.Model):
     tarea = models.OneToOneField(Tarea, on_delete=models.CASCADE, related_name='detalle_grupal')
     colaboradores = models.ManyToManyField(Usuario, related_name='tareas_grupales')
