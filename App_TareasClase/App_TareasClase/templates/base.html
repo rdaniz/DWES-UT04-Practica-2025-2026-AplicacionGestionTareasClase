@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tarea DWES 04{% endblock %}</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            background: #f5f5f5;
+        }
+        header, footer {
+            background: #333;
+            color: white;
+            text-align: center;
+        }
+        {% block style %}
+        /* Aquí irá el contenido específico de los estilos de cada vista */
+        {% endblock %}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tarea DWES 04</h1>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Aquí irá el contenido específico de cada vista -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2025 - Tarea DWES 04</p>
+    </footer>
+</body>
+</html>

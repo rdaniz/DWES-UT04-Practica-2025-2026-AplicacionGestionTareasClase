@@ -60,7 +60,7 @@ ROOT_URLCONF = 'App_TareasClase.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "App_TareasClase" / "templates"],  # Carpeta con template global
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

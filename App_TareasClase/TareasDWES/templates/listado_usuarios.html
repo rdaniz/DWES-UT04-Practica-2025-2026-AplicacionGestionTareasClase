@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Listado de usuarios{% endblock %}
+
+<!--Estilo propio-->
+<!-- {% block style %}
+    .completada {
+        color: green;
+        font-weight: bold;
+    }
+    .pendiente {
+        color: red;
+        font-weight: bold;
+    }
+{% endblock %} -->
+
+<!--Listado de usuarios-->
+{% block content %}
+<ul>
+{% for usuario in usuarios %}
+    <li>
+        <ul>
+            <li><strong>Nombre:</strong> {{ usuario.username }}</li>
+            <li><strong>Email:</strong> {{ usuario.email }}</li>
+            <li><strong>Rol:</strong> {{ usuario.rol }}</li>
+        </ul>
+    </li>
+
+{% empty %}
+    <li>No hay usuarios.</li>
+{% endfor %}
+</ul>
+{% endblock %}
