@@ -25,3 +25,30 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.rol})"
+
+
+# Crear modelo Tarea
+class Tarea(models.Model):
+    INDIVIDUAL = 'individual'
+    GRUPAL = 'grupal'
+
+    TIPO_CHOICES = [
+        (INDIVIDUAL, 'Individual'),
+        (GRUPAL, 'Grupal'),
+    ]
+
+    titulo = models.CharField(max_length=100)
+    descripcion = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_entrega = models.DateField()
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    creada_por = models.ForeignKey(
+        'TareasDWES.Usuario', on_delete=models.CASCADE, related_name='tareas_creadas')
+    requiere_validacion = models.BooleanField(default=False)
+    validada = models.BooleanField(default=False)
+    profesor_validador = models.ForeignKey(
+        'TareasDWES.Usuario', null=True, blank=True, on_delete=models.SET_NULL, related_name='tareas_a_validar')
+
+    # Además del título muestro el id para poder añadirlo a la url y buscar la tarea
+    def __str__(self):
+        return f"{self.titulo} - {self.id}"
