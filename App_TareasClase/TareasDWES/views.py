@@ -1,11 +1,13 @@
+from urllib import request
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView
+
+from .forms import UsuarioForm
 
 from .models import Tarea, Usuario
 
-# Importar Q para poder utilizar por ejemplo filtros OR
-from django.db.models import Q
+
 
 # Create your views here.
 
@@ -125,3 +127,15 @@ class TareasValidarView(ListView):
         # Variable profesor para usar en template
         context['profesor'] = self.profesor
         return context
+    
+    
+# FORMULARIO CREAR USUARIO
+
+def crear_usuario(request):
+    form = UsuarioForm(request.POST or None)
+
+    if form.is_valid():
+        usuario = form.save()  # Guarda el usuario en la BD
+        return redirect('mis_datos', pk=usuario.pk) # Redirige a la vista mis_datos del nuevo usuario
+        
+    return render(request, 'usuario_form.html', {'form': form})
