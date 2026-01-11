@@ -53,7 +53,7 @@ class Tarea(models.Model):
     requiere_validacion = models.BooleanField(default=False)
     validada = models.BooleanField(default=False)
     profesor_validador = models.ForeignKey(
-        Usuario, null=True, on_delete=models.SET_NULL, related_name='tareas_a_validar')
+        Usuario, null=True, blank=True, on_delete=models.SET_NULL, related_name='tareas_a_validar')
 
     # Además del título muestro el id para poder añadirlo a la url y buscar la tarea
     def __str__(self):

@@ -2,7 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 
-from .models import Usuario
+from .models import Tarea, Usuario
+
+# Importar Q para poder utilizar por ejemplo filtros OR
+from django.db.models import Q
 
 # Create your views here.
 
@@ -55,3 +58,34 @@ class DetalleUsuarioView(DetailView):
         # Devuelve el usuario si existe, si no None
         return Usuario.objects.filter(pk=self.kwargs.get('pk')).first()
 
+
+# VISTA MIS TAREAS
+
+class MisTareasView(ListView):
+    model = Tarea
+    template_name = 'mis_tareas_alumno.html'
+    context_object_name = 'tareas'
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        self.usuario = Usuario.objects.filter(pk=pk).first()
+
+        if not self.usuario:
+            # Devuelve none si el usuario no existe
+            return Tarea.objects.none()
+
+        # Tareas individuales creadas por el usuario
+        tareas_creadas = Tarea.objects.filter(creada_por=self.usuario)
+
+        # Tareas grupales en las que el usuario es colaborador
+        tareas_grupales = Tarea.objects.filter(
+            detalle_grupal__colaboradores=self.usuario
+        )
+
+        # Unión y orden por tipo y fecha de creación
+        return tareas_creadas.union(tareas_grupales).order_by('tipo', 'fecha_creacion')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['usuario'] = self.usuario
+        return context

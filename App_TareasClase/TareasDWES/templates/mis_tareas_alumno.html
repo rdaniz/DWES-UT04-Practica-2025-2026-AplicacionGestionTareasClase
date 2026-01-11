@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Mis tareas{% endblock %}
+
+{% block style %}
+.usuario-incorrecto {
+    color: red;
+}
+{% endblock %}
+
+{% block content %}
+<h1>Mis tareas</h1>
+
+{% if not usuario %}
+    <p class="usuario-incorrecto">Usuario incorrecto</p>
+{% elif not tareas %}
+    <p>No tiene tareas.</p>
+{% else %}
+
+    {% for tarea in tareas %}
+    <ul>
+        <li><strong>Título:</strong> {{ tarea.titulo }}</li>
+        <li><strong>Descripción:</strong> {{ tarea.descripcion }}</li>
+        <li><strong>Tipo:</strong> {{ tarea.get_tipo_display }}</li>
+        <li><strong>Estado:</strong> {% if tarea.validada %}Validada{% else %}Pendiente{% endif %}</li>
+        <li><strong>Fecha de creación:</strong> {{ tarea.fecha_creacion }}</li>
+    </ul>
+    {% endfor %}
+
+{% endif %}
+{% endblock %}

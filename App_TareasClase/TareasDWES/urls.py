@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import DetalleUsuarioView, ListadoUsuariosView, index
+from .views import DetalleUsuarioView, ListadoUsuariosView, MisTareasView, index
 # listado_usuarios
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
       path('usuarios/', ListadoUsuariosView.as_view(), name='listado_usuarios'),  # Listado de usuarios ListView
       #path('mis-datos/<int:pk>/', mis_datos, name='mis_datos'),  # Mis datos (los obtengo por pk id)
       path('mis-datos/<int:pk>/', DetalleUsuarioView.as_view(), name='mis_datos'),  # Mis datos (los obtengo por pk id) DetailView
+      path('tareas/<int:pk>/', MisTareasView.as_view(), name='mis_tareas'), # Mis tareas que he creado o colaboro
 ]

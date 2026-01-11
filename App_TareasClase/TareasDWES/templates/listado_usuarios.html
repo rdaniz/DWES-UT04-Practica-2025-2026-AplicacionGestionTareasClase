@@ -3,26 +3,22 @@
 {% block title %}Listado de usuarios{% endblock %}
 
 {% block style %}
-.lista-usuarios {
-    list-style: none;
-    padding-left: 0;
+.no-usuarios {
+    color: red;
 }
 {% endblock %}
 
 {% block content %}
 <h1>Listado de usuarios</h1>
 
-<ul class="lista-usuarios">
 {% for usuario in usuarios %}
-    <li>
-        <ul>
-            <li><strong>Nombre:</strong> {{ usuario.username }}</li>
-            <li><strong>Email:</strong> {{ usuario.email }}</li>
-            <li><strong>Rol:</strong> {{ usuario.rol }}</li>
-        </ul>
-    </li>
+    <ul>
+        <li><strong>Nombre:</strong> {{ usuario.username }}</li>
+        <li><strong>Email:</strong> {{ usuario.email }}</li>
+        <li><strong>Rol:</strong> {{ usuario.rol }}</li>
+    </ul>
+
 {% empty %}
-    <li>No hay usuarios</li>
+    <p class="no-usuarios">No existen usuarios</p>
 {% endfor %}
-</ul>
 {% endblock %}
