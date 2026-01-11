@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import DetalleUsuarioView, ListadoUsuariosView, MisTareasView, index
+from .views import DetalleUsuarioView, ListadoUsuariosView, MisTareasView, TareasValidarView, index
 # listado_usuarios
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
       #path('mis-datos/<int:pk>/', mis_datos, name='mis_datos'),  # Mis datos (los obtengo por pk id)
       path('mis-datos/<int:pk>/', DetalleUsuarioView.as_view(), name='mis_datos'),  # Mis datos (los obtengo por pk id) DetailView
       path('tareas/<int:pk>/', MisTareasView.as_view(), name='mis_tareas'), # Mis tareas que he creado o colaboro
+      path('tareas-validar/<int:pk>/', TareasValidarView.as_view(), name='validar_tareas'), # Tareas a validar por un profesor
 ]

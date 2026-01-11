@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Tareas a validar{% endblock %}
+
+{% block content %}
+<h1>Tareas pendientes de validación</h1>
+
+{% if not profesor %}
+    <p style="color:red;">Profesor incorrecto</p>
+
+{% elif not validar_tareas %}
+    <p>No hay tareas pendientes de validación</p>
+
+{% else %}
+    {% for tarea in validar_tareas %}
+    <ul>
+        <li><strong>Título:</strong> {{ tarea.titulo }}</li>
+        <li><strong>Descripción:</strong> {{ tarea.descripcion }}</li>
+        <li><strong>Tipo:</strong> {{ tarea.tipo }}</li>
+        <li><strong>Estado:</strong> {% if tarea.validada %}Validada{% else %}Pendiente{% endif %}</li>
+        <li><strong>Fecha de creación:</strong> {{ tarea.fecha_creacion }}</li>
+        <li>
+            <strong>Creada por:</strong>
+            {% if tarea.creada_por %}
+                {{ tarea.creada_por.username }}
+            {% else %}
+                Usuario eliminado
+            {% endif %}
+        </li>
+
+    </ul>
+    {% endfor %}
+{% endif %}
+{% endblock %}

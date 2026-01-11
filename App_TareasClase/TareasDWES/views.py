@@ -89,3 +89,39 @@ class MisTareasView(ListView):
         context = super().get_context_data(**kwargs)
         context['usuario'] = self.usuario
         return context
+    
+
+# VISTA TAREAS VALIDAR PROFESOR
+
+class TareasValidarView(ListView):
+    model = Tarea
+    template_name = 'tareas_validar_profesor.html'
+    context_object_name = 'validar_tareas'
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+
+        # Obtener profesor por pk
+        self.profesor = Usuario.objects.filter(pk=pk, rol=Usuario.PROFESOR).first()
+
+        # Si no existe o no es profesor muestro none
+        if not self.profesor:
+            return Tarea.objects.none()
+
+        # Tareas pendientes de validar el profesor
+        return Tarea.objects.filter(
+            requiere_validacion=True,
+            validada=False,
+            profesor_validador=self.profesor
+        ).order_by('fecha_entrega')
+
+    def get_context_data(self, **kwargs):
+
+        # super() llama al método original de ListView
+        # Ese método ya crea un diccionario con:
+        # validar_tareas (tu context_object_name), object_list, view, etc.
+        context = super().get_context_data(**kwargs)
+
+        # Variable profesor para usar en template
+        context['profesor'] = self.profesor
+        return context
