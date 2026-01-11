@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Mis datos{% endblock %}
+
+{% block style %}
+.usuario-incorrecto {
+    color: red;
+}
+{% endblock %}
+
+{% block content %}
+<h1>Mis datos</h1>
+
+{% if datos_usuario %}
+
+<ul>
+    <li><strong>Usuario:</strong> {{ datos_usuario.username }}</li>
+    <li><strong>Nombre:</strong> {{ datos_usuario.first_name }}</li>
+    <li><strong>Apellidos:</strong> {{ datos_usuario.last_name }}</li>
+    <li><strong>Email:</strong> {{ datos_usuario.email }}</li>
+    <li><strong>Rol:</strong> {{ datos_usuario.rol }}</li>
+</ul>
+{% else %}
+<p class="usuario-incorrecto">Usuario incorrecto</p>
+{% endif %}
+{% endblock %}
