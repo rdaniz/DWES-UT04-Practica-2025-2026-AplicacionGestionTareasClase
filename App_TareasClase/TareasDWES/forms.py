@@ -1,7 +1,7 @@
 from datetime import date
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Tarea, Usuario
+from .models import Tarea, TareaGrupal, Usuario
 
 # FORMULARIO CREAR USUARIO
 class UsuarioForm(UserCreationForm):
@@ -98,4 +98,94 @@ class TareaIndividualForm(forms.ModelForm):
         tarea.tipo = Tarea.INDIVIDUAL  # Fuerza que sea individual
         if commit:
             tarea.save()
+        return tarea
+    
+
+ # FORMULARIO CREAR TAREA GRUPAL
+
+class TareaGrupalForm(forms.ModelForm):
+
+    # Campo extra para los colaboradores (varios alumnos/profesores)
+    colaboradores = forms.ModelMultipleChoiceField(
+        queryset=Usuario.objects.filter(rol=Usuario.ALUMNO),
+        widget=forms.SelectMultiple(attrs={'class': 'form-select'}),
+        required=True,
+        label='Seleccionar colaboradores'
+    )
+
+    class Meta:
+        model = Tarea
+        fields = ['titulo', 'descripcion', 'fecha_entrega', 'requiere_validacion', 'profesor_validador', 'creada_por']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'placeholder': 'Título de la tarea'}),
+            'descripcion': forms.Textarea(attrs={'placeholder': 'Descripción de la tarea'}),
+            'fecha_entrega': forms.DateInput(attrs={'type': 'date'}),
+            'profesor_validador': forms.Select(attrs={'class': 'form-select'}),
+
+            # Como no estoy utilizando login, muestro todos los usuarios en creada_por
+            # para poder seleccionar quién crea la tarea
+            'creada_por': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Solo mostrar profesores en el campo profesor_validador
+        self.fields['profesor_validador'].queryset = Usuario.objects.filter(rol=Usuario.PROFESOR)
+        self.fields['profesor_validador'].required = False  # Solo obligatorio si requiere_validacion=True
+
+        # Campo creada_por: todos los usuarios (alumnos y profesores)
+        self.fields['creada_por'].queryset = Usuario.objects.all()
+        self.fields['creada_por'].required = True
+
+        # Campo colaboradores: solo alumnos
+        self.fields['colaboradores'].queryset = Usuario.objects.filter(rol=Usuario.ALUMNO)
+        self.fields['creada_por'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_entrega = cleaned_data.get('fecha_entrega')
+        requiere_validacion = cleaned_data.get('requiere_validacion')
+        profesor_validador = cleaned_data.get('profesor_validador')
+        creada_por = cleaned_data.get('creada_por')
+        colaboradores = cleaned_data.get('colaboradores')
+
+        # Validar que la fecha de entrega no sea anterior a hoy
+        if fecha_entrega and fecha_entrega < date.today():
+            self.add_error('fecha_entrega', 'La fecha de entrega no puede ser anterior a hoy')
+
+        # Validar que si requiere validación, haya un profesor asignado
+        if requiere_validacion and not profesor_validador:
+            self.add_error('profesor_validador', 'Debe seleccionar un profesor validador si requiere validación')
+
+        # Validar que creada_por no sea None
+        if not creada_por:
+            self.add_error('creada_por', 'Debes seleccionar un usuario que crea la tarea')
+        
+        # Validar colaboradores
+        if not colaboradores or len(colaboradores) == 1:
+            self.add_error('colaboradores', 'Debes seleccionar al menos dos colaboradores (alumnos) para una tarea grupal')
+
+        return cleaned_data
+
+    def save(self, commit=True):
+
+        # Guardar primero la tarea
+        tarea = super().save(commit=False)
+        tarea.tipo = Tarea.GRUPAL  # Fuerza que sea grupal
+        if commit:
+            tarea.save()
+
+        # Guardar detalle grupal y colaboradores
+
+        # Busca en la base de datos un TareaGrupal cuyo campo tarea sea el que acabamos de guardar (tarea es la tarea recién creada).
+        # Si no existe, lo crea automáticamente.
+        # Devuelve una tupla (objeto, creado):
+            # tarea_grupal: el objeto TareaGrupal que existe o que se acaba de crear.
+            # created: True si se creó nuevo, False si ya existía.
+        tarea_grupal, created = TareaGrupal.objects.get_or_create(tarea=tarea)
+
+        tarea_grupal.colaboradores.set(self.cleaned_data['colaboradores'])
+        if commit:
+            tarea_grupal.save()
+
         return tarea

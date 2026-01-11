@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Crear tarea individual{% endblock %}
+{% block title %}Crear tarea grupal{% endblock %}
 
 {% block style %}
 div {
     margin-top: 20px;
-    margin-bottom: 20spx;
+    margin-bottom: 20px;
 }
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Crear Tarea Individual</h1>
+    <h1>Crear Tarea Grupal</h1>
     <form method="post">
         {% csrf_token %}
         
@@ -71,7 +71,15 @@ div {
             {% endif %}
         </div>
 
-        <button type="submit" class="btn btn-primary">Crear Tarea individual</button>
+        <div class="mb-3">
+            {{ form.colaboradores.label_tag }}
+            {{ form.colaboradores }}
+            {% if form.colaboradores.errors %}
+                <div class="text-danger">{{ form.colaboradores.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Crear Tarea grupal</button>
     </form>
 </div>
 {% endblock %}

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView
 
-from .forms import TareaIndividualForm, UsuarioForm
+from .forms import TareaGrupalForm, TareaIndividualForm, UsuarioForm
 
 from .models import Tarea, Usuario
 
@@ -148,6 +148,19 @@ def crear_tarea_individual(request):
 
     if form.is_valid():
         tarea = form.save()
-        return redirect('index')
+        return redirect('crear_tarea_individual')  # Redirige a la misma página para crear otra tarea
 
     return render(request, 'tarea_individual_form.html', {'form': form})
+
+
+# FORMULARIO CREAR TAREA GRUPAL
+
+def crear_tarea_grupal(request):
+    form = TareaGrupalForm(request.POST or None)
+
+    if form.is_valid():
+        tarea = form.save()
+        return redirect('crear_tarea_grupal')  # Redirige a la misma página para crear otra tarea
+
+    return render(request, 'tarea_grupal_form.html', {'form': form})
+

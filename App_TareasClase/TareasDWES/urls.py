@@ -1,7 +1,7 @@
 from django import views
 from django.urls import path
 
-from .views import DetalleUsuarioView, ListadoUsuariosView, MisTareasView, TareasValidarView, crear_tarea_individual, index, crear_usuario
+from .views import DetalleUsuarioView, ListadoUsuariosView, MisTareasView, TareasValidarView, crear_tarea_individual, crear_tarea_grupal, index, crear_usuario
 # listado_usuarios
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
       path('tareas-validar/<int:pk>/', TareasValidarView.as_view(), name='validar_tareas'), # Tareas a validar por un profesor
       path('crear-usuario/', crear_usuario, name='crear_usuario'),  # Formulario crear usuario
       path('crear-tarea-individual/', crear_tarea_individual, name='crear_tarea_individual'),  # Formulario crear tarea individual
+      path('crear-tarea-grupal/', crear_tarea_grupal, name='crear_tarea_grupal'),  # Formulario crear tarea grupal
 ]
