@@ -2,21 +2,17 @@
 
 {% block title %}Listado de usuarios{% endblock %}
 
-<!--Estilo propio-->
-<!-- {% block style %}
-    .completada {
-        color: green;
-        font-weight: bold;
-    }
-    .pendiente {
-        color: red;
-        font-weight: bold;
-    }
-{% endblock %} -->
+{% block style %}
+.lista-usuarios {
+    list-style: none;
+    padding-left: 0;
+}
+{% endblock %}
 
-<!--Listado de usuarios-->
 {% block content %}
-<ul>
+<h1>Listado de usuarios</h1>
+
+<ul class="lista-usuarios">
 {% for usuario in usuarios %}
     <li>
         <ul>
@@ -25,9 +21,8 @@
             <li><strong>Rol:</strong> {{ usuario.rol }}</li>
         </ul>
     </li>
-
 {% empty %}
-    <li>No hay usuarios.</li>
+    <li>No hay usuarios</li>
 {% endfor %}
 </ul>
 {% endblock %}
