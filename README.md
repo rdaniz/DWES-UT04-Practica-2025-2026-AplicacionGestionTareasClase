@@ -1,4 +1,4 @@
-# MyONG
+# App_TareasClase
 
 Este proyecto va a crear una aplicación para gestionar tareas
 en un entorno educativo que permita a profesores crear y
