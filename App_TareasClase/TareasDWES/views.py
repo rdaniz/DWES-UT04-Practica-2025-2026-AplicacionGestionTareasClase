@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView
 
-from .forms import UsuarioForm
+from .forms import TareaIndividualForm, UsuarioForm
 
 from .models import Tarea, Usuario
 
@@ -139,3 +139,15 @@ def crear_usuario(request):
         return redirect('mis_datos', pk=usuario.pk) # Redirige a la vista mis_datos del nuevo usuario
         
     return render(request, 'usuario_form.html', {'form': form})
+
+
+# FORMULARIO CREAR TAREA INDIVIDUAL
+
+def crear_tarea_individual(request):
+    form = TareaIndividualForm(request.POST or None)
+
+    if form.is_valid():
+        tarea = form.save()
+        return redirect('index')
+
+    return render(request, 'tarea_individual_form.html', {'form': form})
